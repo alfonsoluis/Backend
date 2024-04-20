@@ -17,15 +17,16 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_bookService.GetAllBooks());
+            var books = await _bookService.GetAllBooks();
+            return Ok(books);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var book = _bookService.GetBookById(id);
+            var book = await _bookService.GetBookById(id);
             if (book == null)
             {
                 return NotFound();
@@ -34,14 +35,14 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] AddUpdateBook bookObj)
+        public async Task<IActionResult> Post([FromBody] AddUpdateBook bookObj)
         {
             if (!ValidateBook(bookObj))
             {
                 return BadRequest();
             }
           
-            var book = _bookService.AddBook(bookObj);
+            var book = await _bookService.AddBook(bookObj);
 
             if (book == null)
             {
@@ -55,7 +56,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put([FromRoute]int id, [FromBody] AddUpdateBook bookObj)
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody] AddUpdateBook bookObj)
         {
 
             if (!ValidateBook(bookObj))
@@ -63,7 +64,7 @@ namespace Backend.Controllers
                 return BadRequest();
             }
 
-            var book = _bookService.UpdateBook(id, bookObj);
+            var book = await _bookService.UpdateBook(id, bookObj);
 
             if (book == null)
             {
@@ -78,11 +79,11 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var book = _bookService.DeleteBookById(id);
+            
 
-            if (book == null)
+            if (!await _bookService.DeleteBookById(id))
             {
                 return NotFound();
             }

@@ -1,14 +1,18 @@
-// using Backend.Helpers;
+using Backend.Entity;
 using Backend.Services;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddTransient<IBookService, BookService>();
 
-builder.Services.AddSingleton<IBookService, BookService>();
+// Register the DbContext and connection string
+builder.Services.AddDbContext<BookDbContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+
 
 builder.Services.AddControllers();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

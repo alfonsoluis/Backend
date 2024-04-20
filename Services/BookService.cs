@@ -1,85 +1,68 @@
-﻿using Backend.Models;
+﻿using Backend.Entity;
+using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
     public class BookService : IBookService
     {
-        private readonly List<Book> _bookList;
+        private readonly BookDbContext _context;
 
-        public BookService()
+        public BookService(BookDbContext context) { _context = context; }
+
+        public async Task<List<Book>> GetAllBooks()
         {
-            _bookList = new List<Book>()
+            return await _context.Books.ToListAsync();
+        }
+
+        public async Task<Book?> GetBookById(int id)
+        {
+            return await _context.Books.FirstOrDefaultAsync(book => book.Id == id);
+        }
+
+        public async Task<Book?> AddBook(AddUpdateBook obj)
+        {
+            var addBook = new Book()
             {
-                new Book()
-                {
-                    Id = 1,
-                    Title = "The Name of The Wind",
-                    Author = "Patrick Rothfus",
-                    Genre = "Fantasy",
-                    PublisDate = new DateTime(2007, 3, 27)
-                }
-            };
-        }
-
-        public List<Book> GetAllBooks()
-        {
-            return _bookList;
-        }
-
-        public Book? GetBookById(int id)
-        {
-            return _bookList.FirstOrDefault(book => book.Id == id);
-        }
-
-        public Book AddBook(AddUpdateBook obj)
-        {
-            var newBook = new Book()
-            {
-                Id = _bookList.Max(book => book.Id) + 1,
                 Title = obj.Title,
                 Author = obj.Author,
                 Genre = obj.Genre,
-                PublisDate = obj.PublisDate
+                PublishDate = obj.PublishDate,
             };
 
-            _bookList.Add(newBook);
-
-            return newBook;
+            _context.Books.Add(addBook);
+            var result = await _context.SaveChangesAsync();
+            return result >= 0 ? addBook : null;
         }
 
-        public Book? UpdateBook(int id, AddUpdateBook obj)
+        public async Task<Book?> UpdateBook(int id, AddUpdateBook obj)
         {
-            var bookIndex = _bookList.FindIndex(book => book.Id == id);
-
-            if (bookIndex > 0)
-            {
-                var book = _bookList[bookIndex];
-
-                book.Title = obj.Title;
-                book.Author = obj.Author;
-                book.Genre = obj.Genre;
-                book.PublisDate = obj.PublisDate;
-
-                _bookList[bookIndex] = book;
-
-                return book;
-            }
-            else 
-            {
-                return null;
-            }
-        }
-
-        public Book DeleteBookById(int id)
-        {
-            var book = _bookList.FirstOrDefault(book => book.Id == id);
+            var book = await _context.Books.FirstOrDefaultAsync(index => index.Id == id);
 
             if (book != null)
             {
-                _bookList.Remove(book);
-            }
+                book.Title = obj.Title;
+                book.Author = obj.Author;
+                book.Genre = obj.Genre;
+                book.PublishDate = obj.PublishDate;
 
-            return book;
-        }   
+                var result = await _context.SaveChangesAsync();
+                return result >= 0 ? book : null;
+            }
+            return null;
+        }
+
+        public async Task<bool> DeleteBookById(int id)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(index => index.Id == id);
+            if (book != null)
+            {
+                _context.Books.Remove(book);
+                var result = await _context.SaveChangesAsync();
+                return result >= 0;
+            }
+            return false;
+        }
+
     }
 }

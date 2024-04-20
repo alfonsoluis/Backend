@@ -6,7 +6,7 @@
         public required string Title { get; set; }
         public required string Author { get; set; }
         public required string Genre { get; set; }
-        public required DateTime PublisDate { get; set; } = DateTime.Now;
+        public required DateTime PublishDate { get; set; } = DateTime.Now;
 
     }
 }
