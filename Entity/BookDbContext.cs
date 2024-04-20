@@ -10,6 +10,7 @@ namespace Backend.Entity
         }
 
         public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +42,18 @@ namespace Backend.Entity
                     Genre = "Programming",
                     PublishDate = new DateTime(2022, 1, 1),
                     
+                }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    FirstName = "Alfonso",
+                    LastName = "Rodriguez",
+                    Username = "alfonso",
+                    Password = "123456",
+                    isActive = true
                 }
             );
         }

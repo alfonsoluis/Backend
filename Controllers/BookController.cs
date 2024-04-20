@@ -1,4 +1,5 @@
-﻿using Backend.Models;
+﻿using Backend.Helpers;  
+using Backend.Models;
 using Backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
