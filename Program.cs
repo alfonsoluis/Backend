@@ -1,3 +1,4 @@
+// using Backend.Helpers;
 using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,5 +28,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// app.UseMiddleware<JwtMiddleware>();
 
 app.Run();
