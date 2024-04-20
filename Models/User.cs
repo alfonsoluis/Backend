@@ -9,7 +9,7 @@ namespace Backend.Models
         public string LastName { get; set; }
         public required string Username { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public string Password { get; set; }
         public bool isActive { get; set; }
     }

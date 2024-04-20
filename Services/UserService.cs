@@ -13,17 +13,17 @@ namespace Backend.Services
     {
 
         private readonly AppSettings _appSettings;
-        private readonly BookDbContext db;
+        private readonly BookDbContext context;
 
-        public UserService(IOptions<AppSettings> appSettings, BookDbContext _db)
+        public UserService(IOptions<AppSettings> appSettings, BookDbContext _context)
         {
             _appSettings = appSettings.Value;
-            db = _db;
+            context = _context;
         }
 
         public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
         {
-            var user = await db.Users.SingleOrDefaultAsync(x => x.Username == model.Username && x.Password == model.Password);
+            var user = await context.Users.SingleOrDefaultAsync(x => x.Username == model.Username && x.Password == model.Password);
 
             // return null if user not found
             if (user == null) return null;
@@ -36,12 +36,12 @@ namespace Backend.Services
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            return await db.Users.Where(x => x.isActive == true).ToListAsync();
+            return await context.Users.Where(x => x.isActive == true).ToListAsync();
         }
 
         public async Task<User?> GetById(int id)
         {
-            return await db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<User?> AddAndUpdateUser(User userObj)
@@ -49,24 +49,39 @@ namespace Backend.Services
             bool isSuccess = false;
             if (userObj.Id > 0)
             {
-                var obj = await db.Users.FirstOrDefaultAsync(c => c.Id == userObj.Id);
+                var obj = await context.Users.FirstOrDefaultAsync(c => c.Id == userObj.Id);
                 if (obj != null)
                 {
-                    // obj.Address = userObj.Address;
                     obj.FirstName = userObj.FirstName;
                     obj.LastName = userObj.LastName;
-                    db.Users.Update(obj);
-                    isSuccess = await db.SaveChangesAsync() > 0;
+                    obj.Username = userObj.Username;
+                    obj.Password = userObj.Password;
+                    context.Users.Update(obj);
+                    isSuccess = await context.SaveChangesAsync() > 0;
                 }
             }
             else
             {
-                await db.Users.AddAsync(userObj);
-                isSuccess = await db.SaveChangesAsync() > 0;
+                await context.Users.AddAsync(userObj);
+                isSuccess = await context.SaveChangesAsync() > 0;
             }
 
             return isSuccess ? userObj : null;
         }
+
+        public async Task<bool> DeleteUserById(int id)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(index => index.Id == id);
+            if (user != null)
+            {
+                context.Users.Remove(user);
+                var result = await context.SaveChangesAsync();
+                return result >= 0;
+            }
+            return false;
+        }
+
+
         // helper methods
         private async Task<string> generateJwtToken(User user)
         {

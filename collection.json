@@ -1,0 +1,462 @@
+{
+	"info": {
+		"_postman_id": "a21e432d-ddf4-4481-8056-c9026274f530",
+		"name": "Prueba Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2284517"
+	},
+	"item": [
+		{
+			"name": "Autorizar Usuario y Obtener Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set('bearerTOKEN', jsonData.token)\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('La respuesta debe contener un token', () => {\r",
+							"    pm.expect(jsonData).to.contains.keys(['token'])\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"alfonso\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/User/authenticate",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"User",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set('userID', jsonData.id)\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('El nombre de usuario debe coincidir con el enviado', () => {\r",
+							"    pm.expect(jsonData.username).to.be.eq('maria')\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"Maria\",\r\n  \"lastName\": \"Perez\",\r\n  \"username\": \"maria\",\r\n  \"password\": \"111111\",\r\n  \"isActive\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/User",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('El nombre de usuario debe coincidir con el enviado', () => {\r",
+							"    pm.expect(jsonData.username).to.be.eq('juan')\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"Juan\",\r\n  \"lastName\": \"Perez\",\r\n  \"username\": \"juan\",\r\n  \"password\": \"888888\",\r\n  \"isActive\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/User/{{userID}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"User",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('Debo tener mensaje de eliminacion satisfactorio', () => {\r",
+							"    pm.expect(jsonData.message).to.be.eq('User deleted successfully')\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7129/api/User/{{userID}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"User",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar todos los libros",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7129/api/Book",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"Book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear un Libro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set('bookID', jsonData.id)\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"100 anios de soledad\",\r\n  \"author\": \"Gabriel garcia Marquez\",\r\n  \"genre\": \"Ficcion\",\r\n  \"publishDate\": \"2024-04-20T20:41:45.235Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/Book",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"Book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Libro con el Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7129/api/Book/{{bookID}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"Book",
+						"{{bookID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modificar Libro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"100 anos de soledad\",\r\n  \"author\": \"Gabriel garcia Marquez\",\r\n  \"genre\": \"Ficcion\",\r\n  \"publishDate\": \"2024-04-20T20:41:45.235Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/Book/{{bookID}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"Book",
+						"{{bookID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Libro",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test('El status code debe ser 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('Debo tener mensaje de eliminacion satisfactorio', () => {\r",
+							"    pm.expect(jsonData.message).to.be.eq('Book deleted successfully')\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7129/api/Book/{{bookID}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7129",
+					"path": [
+						"api",
+						"Book",
+						"{{bookID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearerTOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bearerTOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bookID\n",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bookID",
+			"value": ""
+		}
+	]
+}

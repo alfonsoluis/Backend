@@ -41,5 +41,21 @@ namespace Backend.Controllers
         {
             return Ok(await _userService.AddAndUpdateUser(userObj));
         }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!await _userService.DeleteUserById(id))
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                message = "User deleted successfully",
+                id = id
+            });
+        }
     }
 }

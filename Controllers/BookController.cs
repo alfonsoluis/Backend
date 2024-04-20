@@ -26,7 +26,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> Get(int id)
         {
             var book = await _bookService.GetBookById(id);
             if (book == null)

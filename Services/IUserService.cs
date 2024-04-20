@@ -8,6 +8,7 @@ namespace Backend.Services
         Task<IEnumerable<User>> GetAll();
         Task<User?> GetById(int id);
         Task<User?> AddAndUpdateUser(User userObj);
+        Task<bool> DeleteUserById(int id);
 
     }
 }
